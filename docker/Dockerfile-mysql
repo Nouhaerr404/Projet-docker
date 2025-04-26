@@ -1,0 +1,10 @@
+
+# Dockerfile-mysql
+
+FROM mysql:8.0
+
+# Définir les variables d'environnement de ta base de données
+ENV MYSQL_ROOT_PASSWORD=root
+ENV MYSQL_DATABASE=laravel
+ENV MYSQL_USER=laraveluser
+ENV MYSQL_PASSWORD=laravelpass

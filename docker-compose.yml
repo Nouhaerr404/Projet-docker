@@ -1,10 +1,6 @@
-version: '3.8'
-
 services:
   backend:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile-backend
+    image: nouha564/laravel-backend:v1
     container_name: laravel-backend
     ports:
       - "8000:80"
@@ -12,28 +8,48 @@ services:
       - ./backend:/var/www/html
     depends_on:
       - mysql
+    networks:
+      - webapp
 
   frontend:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile-frontend
+    image: nouha564/angular-frontend:v1
     container_name: angular-frontend
     ports:
       - "4200:80"
+    networks:
+      - webapp
 
   mysql:
-    image: mysql:8.0
+    image: nouha564/mysql-custom:v1
     container_name: mysql-db
-    restart: always
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
       MYSQL_USER: laraveluser
       MYSQL_PASSWORD: laravelpass
-    ports:
-      - "3306:3306"
     volumes:
       - dbdata:/var/lib/mysql
+    networks:
+      - webapp
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - webapp
 
 volumes:
   dbdata:
+
+networks:
+  webapp:
+    driver: bridge
